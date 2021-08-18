@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Pending Permits</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+</head>
+<body>
+<div sec:authorize="isAuthenticated()" align="center">
+  Welcome <b><span sec:authentication="name">Username</span></b>
+  &nbsp;
+  <i><span sec:authentication="principal.authorities">Roles</span></i>
+  <form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout" />
+  </form>
+</div>
+<div class="container my-2">
+
+  <h1>Employee Pending Permits List</h1>
+  <table border="1" class = "table table-striped table-responsive-md">
+    <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Starting Date</th>
+      <th>End Date</th>
+      <th>Reason For Permit</th>
+      <th sec:authorize="hasAnyAuthority('ADMIN')"> Actions </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="permits : ${pendingPermits}">
+      <td th:text="${permits.employee.firstName}"></td>
+      <td th:text="${permits.employee.lastName}"></td>
+      <td th:text="${permits.starting_date}"></td>
+      <td th:text="${permits.end_date}"></td>
+      <td th:text="${permits.reasonPermits}"></td>
+      <td sec:authorize="hasAnyAuthority('ADMIN')">
+        <a th:href="@{/approvePermit/{id}(id=${permits.permit_id})}" class="btn btn-primary">Approve</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <a th:href = "@{/}"> Back to Emplooye List</a>
+</div>
+</body>
+</html>
